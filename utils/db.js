@@ -1,15 +1,20 @@
 import { MongoClient } from ('mongodb');
 
+const DB_HOST = process.env.DB_HOST || 'localhost';
+const DB_PORT = process.env.DB_PORT || 27017;
+const DB_DATABASE = process.env.DB_DATABASE || 'files_manager';
+const url = `mongodb://${host}:${port}/${database}`;
+
 class DBClient {
-  constructor() {
-    const host = process.env.DB_HOST || 'localhost';
-    const port = process.env.DB_PORT || 27017;
-    const database = process.env.DB_DATABASE || 'files_manager';
-    const url = `mongodb://${host}:${port}/${database}`;
-    this.client = new MongoClient(url, { useNewUrlParser: true });
-    this.client.connect();
-    this.db = this.client.db(database);
-  }
+    constructor() {
+      MongoClient.connect(url, (err, client) => {
+        if (!err) {
+          this.db = client.db(DB_DATABASE);
+        } else {
+          this.db = false;
+        }
+      });
+    }
 
   async isAlive() {
     return this.client.isConnected();

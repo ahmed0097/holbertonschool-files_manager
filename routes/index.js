@@ -1,13 +1,18 @@
 import express from 'express';
-import controllerRouting from './routes/index';
+import AppController from '../controllers/AppController';
 
-const exPort = process.env.PORT || 5000;
-const app = express();
+function controllerRouting(app) {
+    const router = express.Router();
+    app.use('/', router);
 
-app.use(express.json());
+    router.get('/status', (req, res) => {
+        AppController.getStatus(req, res);
+    });
 
-controllerRouting(app);
+    router.get('/stats', (req, res) => {
+        AppController.getStats(req, res);
+    });
 
-app.listen(exPort, () => {
-  console.log(`Server running on port ${exPort}`);
-});
+}
+
+export default controllerRouting;
